@@ -4,9 +4,10 @@
 #include "../encoding/error.hpp"
 
 #include <core/read.hpp>
+#include <core/write.hpp>
 #include <core/expected.hpp>
 
-namespace utf_8 {
+namespace utf8 {
 
 	struct decoder {
 
@@ -56,7 +57,45 @@ namespace utf_8 {
 
 	struct encoder {
 
+		template<typename Iterator>
+		constexpr void
+		operator () (unicode::code_point cp, Iterator&& it) const {
+			uint32 u = cp;
 
+			if(u >> 7u == 0u) {
+				write<uint8>(u, it);
+				return;
+			}
+
+			if(u >> (6u + 5u) == 0u) {
+				write<uint8>(0b110u << 5u |  u >> 6u,       it);
+				write<uint8>(0b10u  << 6u | (u & 0b111111), it);
+				return;
+			}
+
+			if(u >> (6u + 6u + 4u) == 0u) {
+				write<uint8>((0b1110u << 4u) | (u >> (6u + 6u) & 0b1111  ), it);
+				write<uint8>((0b10u   << 6u) | (u >> (6u)      & 0b111111), it);
+				write<uint8>((0b10u   << 6u) | (u              & 0b111111), it);
+				return;
+			}
+
+			if(u >> (6u + 6u + 6u + 3u) == 0u) {
+				write<uint8>(
+					(0b11110u << 3u) | (u >> (6u + 6u + 6u) & 0b111   ), it
+				);
+				write<uint8>(
+					(0b10u    << 6u) | (u >> (6u + 6u)      & 0b111111), it
+				);
+				write<uint8>(
+					(0b10u    << 6u) | (u >> 6u             & 0b111111), it
+				);
+				write<uint8>(
+					(0b10u    << 6u) | (u                   & 0b111111), it
+				);
+				return;
+			}
+		}
 
 	};
 
