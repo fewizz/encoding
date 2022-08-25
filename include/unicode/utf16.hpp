@@ -3,9 +3,9 @@
 #include "code_point.hpp"
 #include "../encoding/error.hpp"
 
-#include <core/read.hpp>
-#include <core/write.hpp>
-#include <core/expected.hpp>
+#include <read.hpp>
+#include <write.hpp>
+#include <expected.hpp>
 
 namespace utf16 {
 
