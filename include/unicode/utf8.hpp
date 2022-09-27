@@ -97,6 +97,24 @@ namespace utf8 {
 			}
 		}
 
+		nuint units(unicode::code_point cp) const {
+			uint32 u = cp;
+
+			if(u >> 7u == 0u) {
+				return 1;
+			}
+
+			if(u >> (6u + 5u) == 0u) {
+				return 2;
+			}
+
+			if(u >> (6u + 6u + 4u) == 0u) {
+				return 3;
+			}
+
+			return 4;
+		}
+
 	};
 
 }

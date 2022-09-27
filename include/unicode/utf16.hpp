@@ -40,7 +40,9 @@ namespace utf16 {
 	struct encoder {
 		
 		template<typename Iterator>
-		constexpr void operator () (unicode::code_point cp, Iterator&& it) {
+		constexpr void operator () (
+			unicode::code_point cp, Iterator&& it
+		) const {
 			uint32 u = cp;
 
 			if(
@@ -56,7 +58,7 @@ namespace utf16 {
 			write<uint16, Endianness>(( u        & 0b1111111111u) | 0xDC00, it);
 		}
 
-		nuint units(unicode::code_point cp) {
+		nuint units(unicode::code_point cp) const {
 			uint32 u = cp;
 			if(
 				(     0 <= u && u <= 0xD7FF) ||
