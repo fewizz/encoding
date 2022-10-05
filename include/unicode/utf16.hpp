@@ -46,23 +46,23 @@ namespace utf16 {
 			uint32 u = cp;
 
 			if(
-				(     0 <= u && u <= 0xD7FF) ||
-				(0xE000 <= u && u <= 0xFFFF)
+				((     0 <= u) && (u <= 0xD7FF)) ||
+				((0xE000 <= u) && (u <= 0xFFFF))
 			) {
 				write<uint16, Endianness>(u, it);
 				return;
 			}
 
 			u -= 0x10000;
-			write<uint16, Endianness>(((u >> 10) & 0b1111111111u) | 0xD800, it);
-			write<uint16, Endianness>(( u        & 0b1111111111u) | 0xDC00, it);
+			write<uint16, Endianness>(((u >> 10) & 0b1111111111u) + 0xD800, it);
+			write<uint16, Endianness>(( u        & 0b1111111111u) + 0xDC00, it);
 		}
 
 		nuint units(unicode::code_point cp) const {
 			uint32 u = cp;
 			if(
-				(     0 <= u && u <= 0xD7FF) ||
-				(0xE000 <= u && u <= 0xFFFF)
+				((     0 <= u) && (u <= 0xD7FF)) ||
+				((0xE000 <= u) && (u <= 0xFFFF))
 			) {
 				return 1;
 			}
