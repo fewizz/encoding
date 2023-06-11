@@ -6,12 +6,15 @@
 #include <read.hpp>
 #include <write.hpp>
 #include <expected.hpp>
+#include <iterator_and_sentinel.hpp>
 
 namespace utf8 {
 
+	using unit = char8_t;
+
 	struct decoder {
 
-		template<typename Iterator>
+		template<basic_iterator Iterator>
 		expected<unicode::code_point, encoding_error>
 		constexpr operator () (Iterator&& it) const {
 			uint8 b_0 = read<uint8>(it);

@@ -9,6 +9,8 @@
 
 namespace utf16 {
 
+	using unit = char16_t;
+
 	template<endianness Endianness = endianness::native>
 	struct decoder {
 
