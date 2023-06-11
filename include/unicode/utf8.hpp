@@ -60,7 +60,7 @@ namespace utf8 {
 
 	struct encoder {
 
-		template<typename Iterator>
+		template<basic_iterator Iterator>
 		constexpr void
 		operator () (unicode::code_point cp, Iterator&& it) const {
 			uint32 u = cp;

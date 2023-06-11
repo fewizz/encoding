@@ -14,7 +14,7 @@ namespace utf16 {
 	template<endianness Endianness = endianness::native>
 	struct decoder {
 
-		template<typename Iterator>
+		template<basic_iterator Iterator>
 		expected<unicode::code_point, encoding_error>
 		constexpr operator () (Iterator&& it) const {
 			uint16 u_0 = read<uint16, Endianness>(it);
@@ -41,7 +41,7 @@ namespace utf16 {
 	template<endianness Endianness = endianness::native>
 	struct encoder {
 		
-		template<typename Iterator>
+		template<basic_iterator Iterator>
 		constexpr void operator () (
 			unicode::code_point cp, Iterator&& it
 		) const {
