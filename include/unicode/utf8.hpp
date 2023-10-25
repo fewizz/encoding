@@ -12,18 +12,23 @@ namespace utf8 {
 
 	using unit = char8_t;
 
+	template<basic_input_stream<uint8> IS>
 	struct decoder {
+		IS is_;
 
-		template<basic_iterator Iterator>
-		expected<unicode::code_point, encoding_error>
-		constexpr operator () (Iterator&& it) const {
-			uint8 b_0 = read<uint8>(it);
+		constexpr decoder(IS&& is) :
+			is_ { forward<IS>(is) }
+		{}
+
+		constexpr expected<unicode::code_point, encoding_error>
+		read() {
+			uint8 b_0 = ::read<uint8>(is_);
 
 			if(b_0 >> 7u == 0u) {
 				return unicode::code_point{ b_0 };
 			}
 
-			uint8 b_1 = read<uint8>(it);
+			uint8 b_1 = ::read<uint8>(is_);
 
 			if(b_0 >> 5u == 0b110u) {
 				return unicode::code_point {
@@ -32,7 +37,7 @@ namespace utf8 {
 				};
 			}
 
-			uint8 b_2 = read<uint8>(it);
+			uint8 b_2 = ::read<uint8>(is_);
 
 			if(b_0 >> 4u == 0b1110u) {
 				return unicode::code_point {
@@ -42,7 +47,7 @@ namespace utf8 {
 				};
 			}
 
-			uint8 b_3 = read<uint8>(it);
+			uint8 b_3 = ::read<uint8>(is_);
 
 			if(b_0 >> 3u == 0b11110u) {
 				return unicode::code_point {
@@ -58,11 +63,14 @@ namespace utf8 {
 
 	};
 
+	template<basic_input_stream<uint8> IS>
+	decoder(IS&&) -> decoder<IS>;
+
 	struct encoder {
 
-		template<basic_iterator Iterator>
+		template<basic_output_stream<uint8> Stream>
 		constexpr void
-		operator () (unicode::code_point cp, Iterator&& it) const {
+		operator () (unicode::code_point cp, Stream&& it) const {
 			uint32 u = cp;
 
 			if(u >> 7u == 0u) {
